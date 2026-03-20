@@ -1,0 +1,11 @@
+FROM neo4j:5-community
+
+ARG NEO4J_MCP_VERSION=1.4.3
+ARG TARGETARCH
+
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates \
+    && ARCH=$(case ${TARGETARCH} in arm64) echo "arm64" ;; *) echo "x86_64" ;; esac) \
+    && curl -sL "https://github.com/neo4j/mcp/releases/download/v${NEO4J_MCP_VERSION}/neo4j-mcp_Linux_${ARCH}.tar.gz" \
+       | tar xz -C /usr/local/bin/ neo4j-mcp \
+    && chmod +x /usr/local/bin/neo4j-mcp \
+    && apt-get purge -y curl && apt-get autoremove -y && rm -rf /var/lib/apt/lists/*

@@ -1,0 +1,41 @@
+FROM mcr.microsoft.com/playwright:v1.50.0-noble
+
+LABEL maintainer="d0gesec"
+LABEL description="Playwright MCP server with headed Chromium and noVNC"
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install display stack and process manager
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    xvfb \
+    x11vnc \
+    fluxbox \
+    supervisor \
+    novnc \
+    websockify \
+    x11-utils \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install the official @playwright/mcp package globally
+RUN npm install -g @playwright/mcp@latest
+
+RUN mkdir -p /var/log/supervisor
+
+ENV DISPLAY=:99
+ENV SCREEN_WIDTH=1920
+ENV SCREEN_HEIGHT=1080
+ENV SCREEN_DEPTH=24
+ENV MCP_PORT=3000
+ENV MCP_HOST=0.0.0.0
+ENV MCP_BROWSER=chrome
+
+COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+COPY entrypoint-playwright.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
+EXPOSE 6080 3000
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
+    CMD wget -q --spider http://localhost:6080 || exit 1
+
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
