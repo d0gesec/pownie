@@ -1,0 +1,17 @@
+{
+  "name": "d0gesec",
+  "owner": {
+    "name": "d0gesec"
+  },
+  "metadata": {
+    "description": "Offensive security plugins for Claude Code"
+  },
+  "plugins": [
+    {
+      "name": "pownie",
+      "source": "./",
+      "description": "Offensive security toolkit — Neo4j intel graph, strategic compaction, multi-agent orchestration, and post-engagement debriefs",
+      "version": "1.0.0"
+    }
+  ]
+}

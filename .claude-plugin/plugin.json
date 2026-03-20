@@ -1,0 +1,9 @@
+{
+  "name": "pownie",
+  "description": "Offensive security toolkit for Claude Code — Neo4j intel graph, strategic compaction, multi-agent orchestration, and post-engagement debriefs",
+  "version": "1.0.0",
+  "author": {
+    "name": "d0gesec"
+  },
+  "keywords": ["offsec", "ctf", "pentest", "neo4j", "security"]
+}
