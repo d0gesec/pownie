@@ -1,12 +1,15 @@
 # 🦄 Pownie
 
-I vibe-hacked my way to **Top #97 Global** on Hack The Box. Hall of Fame. Built entirely on Claude Code.
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Release](https://img.shields.io/github/v/release/d0gesec/pownie)](https://github.com/d0gesec/pownie/releases)
+
+I vibe-hacked my way to **Top #87 Global** on Hack The Box. Hall of Fame. Built entirely on Claude Code.
 
 <img src="https://d0gesec.dev/ranking.png" alt="htb-hall-of-fame" width="300">
 
-Pownie is the harness that got me there — a Claude Code plugin that wires up persistent intel, lifecycle hooks, and multi-agent coordination for offensive security.
+Pownie is the harness that got me there, a Claude Code plugin that wires up persistent intel, lifecycle hooks, and multi-agent coordination for offensive security.
 
-The model already knows how to hack. It doesn't need playbooks — it needs infrastructure that lets its knowledge compound over long engagements. That's what this is.
+The model already knows how to hack. It doesn't need playbooks, it needs hands and legs that lets its knowledge compound over long engagements. That's what this is.
 
 **What it does:**
 - **Hooks** fire on every tool call — auto-extract credentials, log attempts, surface prior intel before the model repeats itself
@@ -15,7 +18,7 @@ The model already knows how to hack. It doesn't need playbooks — it needs infr
 - **Multi-agent orchestration** spawns parallel teammates after recon or shell access
 - **Context survival** — PreCompact hook snapshots state to Neo4j before compaction wipes the window
 
-Battle-tested across hundreds of HTB machines over 2 months. From #9000+ to Hall of Fame.
+It battle-tested across hundreds of HTB machines over 2 months. From #9000+ to Hall of Fame.
 
 ---
 
@@ -88,6 +91,40 @@ The plugin activates automatically. Skills like the intel graph and strategic co
 
 ---
 
+## 🎯 Basic Workflow
+
+### 1. Give it a target
+
+Tell Claude the ctf target and the goal. That's it.
+
+```
+CTF target's IP 10.10.11.42. Capture the user flag.
+```
+
+The plugin handles the rest in the background — hooks fire on every tool call, credentials get extracted automatically, attempts get logged, and the intel graph builds itself as the model works.
+
+### 2. Spawn teammates for layered attacks
+
+After the initial enumeration, kick off the orchestrator to throw multiple approaches at the target in parallel.
+
+```
+/pownie:offsec-lead
+```
+
+This triggers the offsec-lead skill, which spawns 2-3 parallel Agent teammates for CVE scouts, code analysts, system enumerators, each bootstrapping from the same Neo4j intel graph. Same credentials, same disproven attack classes, no duplicate work.
+
+> **Note:** Multi-agent coordination is currently experimental and disabled by default. I usually engage it after the enum stage when there are multiple attack surfaces to explore concurrently.
+
+### 3. Debrief
+
+After capturing flags, generate a structured writeup with failure analysis.
+
+```
+/pownie:offsec-debrief
+```
+
+---
+
 ## 🔧 Setup Options
 
 ```bash
@@ -101,21 +138,6 @@ The plugin activates automatically. Skills like the intel graph and strategic co
 ./cleanup.sh --volumes  # also wipe neo4j data and workspace
 ./cleanup.sh --full     # remove everything including generated files
 ```
-
-### Custom prefix
-
-If you already have `pownie-*` containers running (e.g. from another project), setup detects the conflict and asks for an alternative prefix:
-
-```
-! Existing containers found using prefix 'pownie':
-  pownie-kali                    (running)
-  pownie-neo4j                   (running)
-
-? Choose a different prefix (or press Enter to use 'pownie' anyway): pownie-dev
-✓ Using prefix: pownie-dev
-```
-
-All generated files — compose, `.mcp.json`, hooks — will use the chosen prefix.
 
 ### Bare mode
 
