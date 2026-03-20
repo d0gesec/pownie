@@ -1,10 +1,21 @@
 # 🦄 Pownie
 
-A Claude Code plugin that gives your agent structured attack methodology, persistent memory across context compactions, multi-agent coordination, and full observability, all backed by a Neo4j knowledge graph.
-
-Battle-tested through hundreds of Hack The Box machines, contributing to a **Top #100 global ranking** on the platform.
+I vibe-hacked my way to **Top #97 Global** on Hack The Box. Hall of Fame. Built entirely on Claude Code.
 
 <img src="https://d0gesec.dev/ranking.png" alt="htb-hall-of-fame" width="300">
+
+Pownie is the harness that got me there — a Claude Code plugin that wires up persistent intel, lifecycle hooks, and multi-agent coordination for offensive security.
+
+The model already knows how to hack. It doesn't need playbooks — it needs infrastructure that lets its knowledge compound over long engagements. That's what this is.
+
+**What it does:**
+- **Hooks** fire on every tool call — auto-extract credentials, log attempts, surface prior intel before the model repeats itself
+- **Neo4j intel graph** stores everything the model discovers, outside the context window, where compaction can't reach it
+- **Attack class tracking** kills entire categories of attack when evidence shows they're impossible on the target
+- **Multi-agent orchestration** spawns parallel teammates after recon or shell access
+- **Context survival** — PreCompact hook snapshots state to Neo4j before compaction wipes the window
+
+Battle-tested across hundreds of HTB machines over 2 months. From #9000+ to Hall of Fame.
 
 ---
 
