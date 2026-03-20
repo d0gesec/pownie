@@ -347,7 +347,7 @@ try:
             root_attrs.append({"key": "trigger.context", "value": {"stringValue": trigger_context[:2000]}})
 
         # Span name: trigger context (why) + command (what)
-        short_tool = tool_name.replace("mcp__kali__", "")
+        short_tool = tool_name.replace("mcp__plugin_pownie_kali__", "").replace("mcp__kali__", "")
         trigger_short = trigger_context.split('\n')[0].strip()[:80] if trigger_context else ""
         if trigger_short and cmd_short:
             span_name = f"{trigger_short} → {short_tool}: {cmd_short}"

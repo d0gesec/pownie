@@ -221,7 +221,9 @@ generate_hooks() {
     if [ "$EXEC_MODE" = "bare" ]; then
         matcher="Bash"
     else
-        matcher="mcp__kali__execute_command|mcp__kali__session_send|mcp__kali__session_create"
+        # Match both plugin-namespaced (mcp__plugin_pownie_kali__*) and
+        # project-level (mcp__kali__*) MCP tool names
+        matcher="mcp__plugin_pownie_kali__execute_command|mcp__plugin_pownie_kali__session_send|mcp__plugin_pownie_kali__session_create|mcp__kali__execute_command|mcp__kali__session_send|mcp__kali__session_create"
     fi
 
     cat > "$hooks_file" << HOOKSEOF
@@ -481,30 +483,15 @@ generate_settings_local() {
     local mcp_permissions=""
 
     if [ "$EXEC_MODE" = "mcp" ]; then
-        mcp_permissions='"mcp__kali__execute_command",
-      "mcp__kali__session_send",
-      "mcp__kali__session_close",
-      "mcp__kali__session_create",
-      "mcp__kali__session_list",
-      "mcp__kali__system_install_package",
-      "mcp__kali__system_find_tool",
-      "mcp__kali__task_get_output",
-      "mcp__kali__task_stop",
-      "mcp__kali__task_list",
-      "mcp__kali__list_files",
-      "mcp__kali__proxy_start",
-      "mcp__kali__proxy_get_flows",
-      "mcp__kali__proxy_export",
-      "mcp__kali__proxy_replay",
-      "mcp__neo4j__read-cypher",
-      "mcp__neo4j__write-cypher",
-      "mcp__neo4j__get-schema",
+        mcp_permissions='"mcp__plugin_pownie_kali__*",
+      "mcp__kali__*",
+      "mcp__plugin_pownie_neo4j__*",
+      "mcp__neo4j__*",
       "WebFetch(domain:*)",
       "WebSearch"'
     else
-        mcp_permissions='"mcp__neo4j__read-cypher",
-      "mcp__neo4j__write-cypher",
-      "mcp__neo4j__get-schema",
+        mcp_permissions='"mcp__plugin_pownie_neo4j__*",
+      "mcp__neo4j__*",
       "Bash(nmap:*)",
       "Bash(gobuster:*)",
       "Bash(nikto:*)",
@@ -518,6 +505,7 @@ generate_settings_local() {
 
     if [ "$EXEC_MODE" = "mcp" ] && $ENABLE_BROWSER; then
         mcp_permissions="${mcp_permissions},
+      \"mcp__plugin_pownie_playwright__*\",
       \"mcp__playwright__*\""
     fi
 
