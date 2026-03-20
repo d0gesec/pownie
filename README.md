@@ -1,24 +1,21 @@
 # Pownie
 
-> **Turn Claude Code into an autonomous offensive security operator.**
-
-A Claude Code plugin that gives your agent structured attack methodology, persistent memory across context compactions, multi-agent coordination, and full observability — all backed by a Neo4j knowledge graph.
+A Claude Code plugin that gives your agent structured attack methodology, persistent memory across context compactions, multi-agent coordination, and full observability, all backed by a Neo4j knowledge graph.
 
 Battle-tested through hundreds of Hack The Box machines, contributing to a **Top #100 global ranking** on the platform.
+<img src="https://d0gesec.dev/ranking.png" alt="htb-hall-of-fame" width="300">
 
 ---
 
 ## ⚠️ Required MCP Servers
 
-**This plugin does not work standalone.** It requires a specific MCP server stack to function. The skills, hooks, and tracing infrastructure all depend on these services:
+**This plugin does not work standalone.** It requires a specific MCP server stack to function. Don't worry, just run `./setup.sh` and it builds and starts everything for you.
 
 | MCP Server | Purpose | Required |
 |------------|---------|----------|
 | [**mcp-kali**](https://github.com/d0gesec/mcp-kali) | Kali Linux command execution, sessions, background tasks, proxy | **Yes** |
 | **neo4j-mcp** | Knowledge graph for attack state, credentials, attempt tracking | **Yes** |
 | **playwright** | Browser automation with headed Chromium + noVNC | Optional |
-
-Run `./setup.sh` to spin up the entire stack. Without it, the plugin loads but has no MCP tools to work with.
 
 ---
 
@@ -53,7 +50,7 @@ The setup wizard will:
 - Ask which optional services to enable (browser, telemetry)
 - Detect container name conflicts and offer alternatives
 - Generate `docker-compose.yml`, `.mcp.json`, and `.claude/settings.local.json`
-- Pull Docker images and start the stack
+- Build Docker images and start the stack
 - Wait for Neo4j to be healthy
 
 ### 2. Install the plugin
@@ -85,7 +82,7 @@ The plugin activates automatically. Skills like the intel graph and strategic co
 ./setup.sh              # interactive — choose components
 ./setup.sh --all        # everything (browser + telemetry)
 ./setup.sh --core-only  # just kali + neo4j
-./setup.sh --build      # build from source instead of pulling Docker Hub images
+./setup.sh --bare       # bare Kali/Linux mode (no mcp-kali container)
 ./setup.sh --down       # stop containers
 
 ./cleanup.sh            # stop containers, keep data
@@ -108,15 +105,15 @@ If you already have `pownie-*` containers running (e.g. from another project), s
 
 All generated files — compose, `.mcp.json`, hooks — will use the chosen prefix.
 
-### Build from source
+### Bare mode
 
-By default, setup pulls pre-built images from Docker Hub. To build from the Dockerfiles in `docker/`:
+If you're running Claude Code directly on a Kali/Linux machine instead of through mcp-kali containers:
 
 ```bash
-./setup.sh --build
+./setup.sh --bare
 ```
 
-This clones [mcp-kali](https://github.com/d0gesec/mcp-kali) from GitHub during the Docker build.
+This skips the kali container, sets hook matchers to fire on `Bash` tool calls, and only spins up Neo4j in Docker. You still get the full intel graph, strategic compaction, and all skills.
 
 ---
 
@@ -149,11 +146,11 @@ This clones [mcp-kali](https://github.com/d0gesec/mcp-kali) from GitHub during t
 
 Every Kali MCP tool call flows through the hook pipeline:
 
-1. **PreToolUse** (`trace.sh`) — queries Neo4j for prior attempts, known credentials, disproven attack classes, and active strategies on the target IP. Surfaces this as context so the agent avoids repeating failed approaches.
+1. **PreToolUse** (`pre-exec.sh`) — queries Neo4j for prior attempts, known credentials, disproven attack classes, and active strategies on the target IP. Surfaces this as context so the agent avoids repeating failed approaches.
 
 2. **Agent executes command** via mcp-kali
 
-3. **PostToolUse** (`trace.sh`) — logs the command and result to Neo4j, auto-extracts credentials and services from output, prompts for phase classification, detects shell acquisition and repeated failures.
+3. **PostToolUse** (`post-exec.sh`) — logs the command and result to Neo4j, auto-extracts credentials and services from output, prompts for phase classification, detects shell acquisition and repeated failures.
 
 4. **PreCompact** (`pre-compact-save.sh`) — before any context compaction, queries Neo4j and writes a rich `compact-state.md` with targets, credentials, failed attempts, and command history for post-compaction recovery.
 
