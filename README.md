@@ -1,8 +1,9 @@
-# Pownie
+# 🦄 Pownie
 
 A Claude Code plugin that gives your agent structured attack methodology, persistent memory across context compactions, multi-agent coordination, and full observability, all backed by a Neo4j knowledge graph.
 
 Battle-tested through hundreds of Hack The Box machines, contributing to a **Top #100 global ranking** on the platform.
+
 <img src="https://d0gesec.dev/ranking.png" alt="htb-hall-of-fame" width="300">
 
 ---
